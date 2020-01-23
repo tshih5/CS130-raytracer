@@ -13,14 +13,9 @@ Hit Sphere::Intersection(const Ray& ray, int part) const
 			return {NULL, 0, 0};
 	}
 	
-	double t1 = (-b + sqrt(discrim)) / (2 * a);
-	double t2 = (-b - sqrt(discrim)) / (2 * a);
-	if(t1 >= small_t || t2 >= small_t ){
-		if(t2 < t1 && t2 >= small_t){
-			return {this, t2, part};
-		}else if(t1 < t2 && t2 >= small_t){
-			return {this, t1, part};
-		}
+	double t = (-b - sqrt(discrim)) / (2 * a);
+	if(t >= small_t){
+		return {this, t, part};
 
 	}else{
 			return {NULL, 0, 0};
