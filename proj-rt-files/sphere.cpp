@@ -4,7 +4,7 @@
 // Determine if the ray intersects with the sphere
 Hit Sphere::Intersection(const Ray& ray, int part) const
 {
-    TODO;
+    //calculate intersection
 	double a = dot(ray.direction, ray.direction);
 	double b = 2 * dot(ray.direction, (ray.endpoint - this->center));
 	double c = dot(ray.endpoint - this->center, ray.endpoint - this->center) - (this->radius * this->radius);
@@ -26,7 +26,7 @@ Hit Sphere::Intersection(const Ray& ray, int part) const
 vec3 Sphere::Normal(const vec3& point, int part) const
 {
     vec3 normal;
-    TODO; // compute the normal direction
+    // compute the normal direction
     normal = (point - center).normalized();
     return normal;
 }
