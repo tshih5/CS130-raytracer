@@ -9,7 +9,7 @@ Shade_Surface(const Ray& ray,const vec3& intersection_point,
     const vec3& normal,int recursion_depth) const
 {
     vec3 color;
-    TODO; //determine the color
+    //determine the color
     color = color_ambient * world.ambient_color * world.ambient_intensity;
 	Hit hit;
     for(unsigned i = 0; i < world.lights.size(); ++i){
@@ -18,14 +18,17 @@ Shade_Surface(const Ray& ray,const vec3& intersection_point,
 			Ray temp;
 			temp.endpoint = intersection_point;																//temp ray from surface to light
 			temp.direction = l.normalized();
-			hit = world.Closest_Intersection(temp);															//find the closest intersection with temp
-			if(hit.object != NULL && hit.dist < l.magnitude()){												//if an object is found to be between the light source and surface, 
-				continue;																					//skip adding diffuse and specular reflection
+			hit = world.Closest_Intersection(temp);
+			if(debug_pixel)
+				std::cout << bool(hit.object == NULL) << std::endl;															//find the closest intersection with temp
+			if(hit.object && hit.dist < l.magnitude()){												//if an object is found to be between the light source and surface, 				
+				return color;																				//skip adding diffuse and specular reflection
 			}
 		}
 		
-		vec3 light_color = world.lights.at(i)->Emitted_Light(ray.direction) / l.magnitude_squared(); 		//determine color of world light
 		
+		
+		vec3 light_color = world.lights.at(i)->Emitted_Light(ray.direction) / l.magnitude_squared(); 		//determine color of world light
 		
 		double diffuse_intensity = std::max(dot(l.normalized(), normal), 0.0);						 		//get I_d
 		color += diffuse_intensity * light_color * color_diffuse;											//R_d * L_d * diffuse_intensity
