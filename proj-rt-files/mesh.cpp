@@ -50,8 +50,19 @@ Hit Mesh::Intersection(const Ray& ray, int part) const
 vec3 Mesh::Normal(const vec3& point, int part) const
 {
     assert(part>=0);
-    TODO;
-    return vec3();
+    vec3 a = vertices[triangles[part][0]];
+    vec3 b = vertices[triangles[part][1]];
+    vec3 c = vertices[triangles[part][1]];
+    vec3 ab = b - a;
+    vec3 ac = c - a;
+    std::cout << "a = " << a << std::endl;
+    std::cout << "b = " << b << std::endl;
+    std::cout << "c = " << c << std::endl;
+    std::cout << "ab = " << ab << std::endl;
+    std::cout << "ac = " << ac << std::endl;
+    std::cout << "cross = " << cross(ab, ac) << std::endl <<std::endl;
+    
+    return cross(ab, ac).normalized();
 }
 
 // This is a helper routine whose purpose is to simplify the implementation
@@ -69,6 +80,14 @@ vec3 Mesh::Normal(const vec3& point, int part) const
 bool Mesh::Intersect_Triangle(const Ray& ray, int tri, double& dist) const
 {
     TODO;
+    vec3 x(0, 0, 0);
+    ivec3 triangle = triangles[tri];
+    vec3 normal = Normal(x, tri));
+    //calculate plane made by the triangle
+    //calculate intersection point between plane and ray
+    //if it exists, calculate barycentric coordinates else return false
+    //then if barycentric coordinates are ok return true and change dist
+    //else return false
     return false;
 }
 
