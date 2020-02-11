@@ -18,10 +18,8 @@ Shade_Surface(const Ray& ray,const vec3& intersection_point,
 			Ray temp;
 			temp.endpoint = intersection_point;																//temp ray from surface to light
 			temp.direction = l.normalized();
-			hit = world.Closest_Intersection(temp);
-			if(debug_pixel)
-				std::cout << bool(hit.object == NULL) << std::endl;															//find the closest intersection with temp
-			if(hit.object && hit.dist < l.magnitude()){												//if an object is found to be between the light source and surface, 				
+			hit = world.Closest_Intersection(temp);															//find the closest intersection with temp
+			if(hit.object && hit.dist < l.magnitude()){														//if an object is found to be between the light source and surface, 				
 				return color;																				//skip adding diffuse and specular reflection
 			}
 		}
