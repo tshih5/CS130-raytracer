@@ -71,7 +71,7 @@ vec3 Mesh::Normal(const vec3& point, int part) const
     vec3 c = vertices[triangles[part][2]];
     vec3 ab = b - a;													//get two edge vectors and calculate cross product for the normal
     vec3 ac = c - a;
-    if(false){
+    if(debug_pixel){
 		std::cout << "a: " << a << " b: " << b << " c: " << c <<std::endl;
 		std::cout << "ab: " << ab << " ac: " << ac << std::endl;
 		std::cout << "normal: " << cross(ab, ac).normalized() << std::endl;

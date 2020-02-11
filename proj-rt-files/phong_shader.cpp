@@ -24,8 +24,6 @@ Shade_Surface(const Ray& ray,const vec3& intersection_point,
 			}
 		}
 		
-		
-		
 		vec3 light_color = world.lights.at(i)->Emitted_Light(ray.direction) / l.magnitude_squared(); 		//determine color of world light
 		
 		double diffuse_intensity = std::max(dot(l.normalized(), normal), 0.0);						 		//get I_d
@@ -34,7 +32,8 @@ Shade_Surface(const Ray& ray,const vec3& intersection_point,
 		vec3 ref_dir = ((2 * dot(l, normal) * normal) - l).normalized(); 									//ref_dir = reflection direction
 		double specular_intensity = pow(std::max(dot(ref_dir, (ray.direction * -1)), 0.0), specular_power); //ray.direciton = view direction, get I_s																							
 		color += specular_intensity * light_color * color_specular;											//R_s * L_s * specular_intensity
-		
+		if(debug_pixel)
+			std::cout << "diffuse color" << diffuse_intensity * light_color * color_diffuse << std::endl;
 	}
     
     return color;
