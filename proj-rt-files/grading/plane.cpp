@@ -8,7 +8,8 @@
 // to record a hit with t=0 as the first entry in hits.
 Hit Plane::Intersection(const Ray& ray, int part) const
 {
-    if(dot(ray.direction, this->normal) != 0 && dot((this->x1 - ray.endpoint), this->normal) / dot(ray.direction, this->normal) > small_t){
+	double dotp = dot(ray.direction, this->normal);
+    if((dotp <= -1.0 * small_t || dotp >= small_t) && dot((this->x1 - ray.endpoint), this->normal) / dot(ray.direction, this->normal) >= small_t){
 		double t = (dot(this->x1 - ray.endpoint, this->normal)) / dot(ray.direction, this->normal);
 		return {this, t, part};
 	}

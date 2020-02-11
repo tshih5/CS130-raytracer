@@ -18,7 +18,7 @@ Hit Sphere::Intersection(const Ray& ray, int part) const
 		return {this, t, part};
 
 	}else{
-			return {NULL, 0, 0};
+			return {NULL, 0, -1};
 	}
  
 }
