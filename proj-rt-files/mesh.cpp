@@ -42,8 +42,24 @@ void Mesh::Read_Obj(const char* file)
 // Check for an intersection against the ray.  See the base class for details.
 Hit Mesh::Intersection(const Ray& ray, int part) const
 {
-    TODO;
-    return {};
+
+	double dist = 0;
+    if(part >= 0){														//check specified part
+		if(debug_pixel){
+			std::cout << "entered mesh intersection" << std::endl;
+		}
+		if(Intersect_Triangle(ray, part, dist)){
+			return {this, dist, part};
+		}
+	}else{																//check against all parts and return intersected hit	
+		for(unsigned i = 0; i < triangles.size(); ++i){
+			if(Intersect_Triangle(ray, i, dist)){
+				return {this, dist, (int)i};
+			}
+		}
+		return {NULL, 0, 0};
+	}
+	return {NULL, 0 , 0};
 }
 
 // Compute the normal direction for the triangle with index part.
@@ -52,16 +68,14 @@ vec3 Mesh::Normal(const vec3& point, int part) const
     assert(part>=0);
     vec3 a = vertices[triangles[part][0]];
     vec3 b = vertices[triangles[part][1]];
-    vec3 c = vertices[triangles[part][1]];
-    vec3 ab = b - a;
+    vec3 c = vertices[triangles[part][2]];
+    vec3 ab = b - a;													//get two edge vectors and calculate cross product for the normal
     vec3 ac = c - a;
-    std::cout << "a = " << a << std::endl;
-    std::cout << "b = " << b << std::endl;
-    std::cout << "c = " << c << std::endl;
-    std::cout << "ab = " << ab << std::endl;
-    std::cout << "ac = " << ac << std::endl;
-    std::cout << "cross = " << cross(ab, ac) << std::endl <<std::endl;
-    
+    if(false){
+		std::cout << "a: " << a << " b: " << b << " c: " << c <<std::endl;
+		std::cout << "ab: " << ab << " ac: " << ac << std::endl;
+		std::cout << "normal: " << cross(ab, ac).normalized() << std::endl;
+	}
     return cross(ab, ac).normalized();
 }
 
@@ -82,13 +96,30 @@ bool Mesh::Intersect_Triangle(const Ray& ray, int tri, double& dist) const
     TODO;
     vec3 x(0, 0, 0);
     ivec3 triangle = triangles[tri];
-    vec3 normal = Normal(x, tri));
-    //calculate plane made by the triangle
-    //calculate intersection point between plane and ray
-    //if it exists, calculate barycentric coordinates else return false
-    //then if barycentric coordinates are ok return true and change dist
-    //else return false
-    return false;
+    vec3 normal = Normal(x, tri);
+    vec3 a, b, c, ab, ac;
+    a = vertices[triangle[0]];
+    b = vertices[triangle[1]];
+    c = vertices[triangle[2]];
+    ab = b - a;													//get two edge vectors
+    ac = c - a;
+	//calculate if ray intersects triangle.
+	double dotp = dot(ray.direction, normal);
+    if((dotp <= -1.0 * small_t || dotp >= small_t) && dot((a - ray.endpoint), normal) / dot(ray.direction, normal) >= small_t){ //ray intersects plane created by the triangle.
+		double t = (dot(a - ray.endpoint, normal)) / dot(ray.direction, normal);
+		vec3 intersection_point = ray.endpoint + t * ray.direction;																// this is point p for barycentric coordinates
+		vec3 w = intersection_point - a;
+		double bet, gam;
+		bet = dot(w, cross(normal, ac)) / dot(ab, cross(normal, ac));
+		gam = dot(w, cross(normal, ab)) / dot(ac, cross(normal, ab));
+		if(bet > -weight_tolerance && gam > -weight_tolerance && (1 - bet - gam) > -weight_tolerance){
+			dist = t;
+			return true;
+		}
+	}else{
+		return false;
+	}
+	return false;
 }
 
 // Compute the bounding box.  Return the bounding box of only the triangle whose

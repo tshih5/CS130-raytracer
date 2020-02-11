@@ -22,7 +22,6 @@ Render_World::~Render_World()
 // to ensure that hit.dist>=small_t.
 Hit Render_World::Closest_Intersection(const Ray& ray)
 {
-    TODO;
     /*
      * 	PseudoCode
      * set min_t to large val
@@ -36,9 +35,12 @@ Hit Render_World::Closest_Intersection(const Ray& ray)
      double min_t = std::numeric_limits<double>::max();
      for(unsigned i = 0; i < objects.size(); ++i){
 		Hit intersection = objects.at(i)->Intersection(ray, 0);						//get ray intersection
-		if(intersection.dist < min_t && intersection.dist > small_t){		//check if ray intersection is smaller than the current min and is greater than small_t
+		if(intersection.dist < min_t && intersection.dist >= small_t){				//check if ray intersection is smaller than the current min and is greater than small_t
 				hit = intersection;
 				min_t = intersection.dist;
+				if(debug_pixel){
+					std::cout << "min_t: " << min_t << std::endl;
+				}
 		}
 	 }
      return hit;
@@ -47,12 +49,13 @@ Hit Render_World::Closest_Intersection(const Ray& ray)
 // set up the initial view ray and call
 void Render_World::Render_Pixel(const ivec2& pixel_index)
 {
-    TODO; // set up the initial view ray here
+     // set up the initial view ray here
 	Ray ray;
     ray.endpoint = camera.position;
     ray.direction = (camera.World_Position(pixel_index) - ray.endpoint).normalized();
-    vec3 color=Cast_Ray(ray,1);
-    camera.Set_Pixel(pixel_index,Pixel_Color(color));
+    vec3 color = Cast_Ray(ray,1);
+    camera.Set_Pixel(pixel_index, Pixel_Color(color));
+
 }
 
 void Render_World::Render()
@@ -70,15 +73,13 @@ void Render_World::Render()
 vec3 Render_World::Cast_Ray(const Ray& ray,int recursion_depth)
 {
     vec3 color;
-    TODO; // determine the color here
+	// determine the color here
     struct Hit hit = {NULL, 0, 0};     //const Ray& ray,const vec3& intersection_point, const vec3& normal,int recursion_depth
     hit = this->Closest_Intersection(ray);
     vec3 intersection_point = ray.Point(hit.dist);
     
     if(hit.object != NULL){
-		color = hit.object->material_shader->Shade_Surface(ray, intersection_point, 
-																hit.object->Normal(intersection_point, 0), 
-																recursion_depth);
+		color = hit.object->material_shader->Shade_Surface(ray, intersection_point, hit.object->Normal(intersection_point, 0), recursion_depth);
 	}else{
 		color = this->background_shader->Shade_Surface(ray, color, color, recursion_depth);
 	}
