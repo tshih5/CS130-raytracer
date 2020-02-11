@@ -34,7 +34,7 @@ Hit Render_World::Closest_Intersection(const Ray& ray)
      struct Hit hit = {NULL, 0, 0};
      double min_t = std::numeric_limits<double>::max();
      for(unsigned i = 0; i < objects.size(); ++i){
-		Hit intersection = objects.at(i)->Intersection(ray, 0);						//get ray intersection
+		Hit intersection = objects.at(i)->Intersection(ray, -1);						//get ray intersection
 		if(intersection.dist < min_t && intersection.dist >= small_t){				//check if ray intersection is smaller than the current min and is greater than small_t
 				hit = intersection;
 				min_t = intersection.dist;
